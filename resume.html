@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>王小明 - 履歷</title>
+  <title>馬耀賢 - 履歷</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
   <style>
     body {
@@ -11,19 +12,23 @@
       background: #eef2f5;
       font-family: "Segoe UI", Arial, sans-serif;
     }
+
     .resume-container {
       display: flex;
-      justify-content: center; /* 水平置中 */
+      justify-content: center;
+      /* 水平置中 */
       padding: 40px 0;
     }
+
     .resume {
       max-width: 1200px;
       width: 100%;
       background: #fff;
       border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
       padding: 25px;
     }
+
     .avatar {
       width: 100px;
       height: 100px;
@@ -31,27 +36,32 @@
       object-fit: cover;
       border: 2px solid #007bff;
     }
+
     .resume-header {
       display: flex;
       align-items: center;
       gap: 20px;
       flex-wrap: wrap;
     }
+
     .name {
       margin: 0;
       font-size: 1.8rem;
       color: #222;
       font-weight: bold;
     }
+
     .title {
       font-size: 1.1rem;
       color: #555;
       margin-bottom: 10px;
     }
+
     .contact {
       font-size: 0.95rem;
       color: #777;
     }
+
     .section-title {
       border-left: 4px solid #007bff;
       padding-left: 8px;
@@ -59,36 +69,42 @@
       margin-bottom: 10px;
       font-weight: bold;
     }
+
     .summary-text {
       color: #555;
       line-height: 1.6;
     }
+
     .sub-title {
       font-size: 1.1rem;
       margin-top: 20px;
       color: #444;
       font-weight: bold;
     }
+
     .achievements-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
       gap: 15px;
     }
+
     .achievement-card,
     .edu-block,
     .tech-card {
       background: #f8f9fa;
       border-radius: 8px;
       padding: 15px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
       transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
+
     .achievement-card:hover,
     .edu-block:hover,
     .tech-card:hover {
       transform: translateY(-3px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
+
     .icon {
       font-size: 24px;
       width: 40px;
@@ -99,12 +115,14 @@
       margin-right: 14px;
       color: #007bff;
     }
+
     .ach-title {
       margin: 0;
       font-size: 1rem;
       font-weight: bold;
       color: #333;
     }
+
     .ach-desc,
     .edu-desc {
       margin: 4px 0 0;
@@ -112,21 +130,25 @@
       color: #555;
       line-height: 1.5;
     }
+
     .tech-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 15px;
     }
+
     .tech-title {
       font-weight: bold;
       margin-bottom: 8px;
       color: #007bff;
     }
+
     .tech-card ul {
       list-style: none;
       padding: 0;
       margin: 0;
     }
+
     .tech-card li {
       font-size: 0.9rem;
       color: #555;
@@ -134,177 +156,221 @@
     }
   </style>
 </head>
+
 <body>
-<div id="app">
-  <div class="resume-container">
-    <div class="resume">
-      <!-- Header -->
-      <header class="resume-header">
-        <img :src="profile.avatar" alt="avatar" class="avatar" />
-        <div class="header-info">
-          <h1 class="name">{{ profile.name }}</h1>
-          <p class="title">{{ profile.title }}</p>
-          <p class="contact"><i class="fas fa-envelope"></i> {{ profile.email }}</p>
-          <p class="contact"><i class="fas fa-phone"></i> {{ profile.phone }}</p>
-        </div>
-      </header>
-
-      <hr />
-
-      <!-- Summary -->
-      <section class="resume-section">
-        <h2 class="section-title">Summary</h2>
-        <p class="summary-text">{{ profile.summary }}</p>
-      </section>
-
-      <!-- Tech Stack -->
-      <section class="resume-section">
-        <h2 class="section-title">Tech Stack</h2>
-        <div class="tech-grid">
-          <div v-for="stack in techStack" :key="stack.category" class="tech-card">
-            <h4 class="tech-title"><i :class="stack.icon"></i> {{ stack.category }}</h4>
-            <ul>
-              <li v-for="skill in stack.skills" :key="skill">{{ skill }}</li>
-            </ul>
+  <div id="app">
+    <div class="resume-container">
+      <div class="resume">
+        <!-- Header -->
+        <header class="resume-header">
+          <!-- <img :src="profile.avatar" alt="avatar" class="avatar" /> -->
+          <div class="header-info">
+            <h1 class="name">{{ profile.name }}</h1>
+            <p class="title">{{ profile.title }}</p>
+            <p class="contact"><i class="fas fa-envelope"></i> {{ profile.email }}</p>
+            <p class="contact"><i class="fas fa-phone"></i> {{ profile.phone }}</p>
           </div>
-        </div>
-      </section>
+        </header>
 
-      <!-- Experience -->
-      <section class="resume-section">
-        <h2 class="section-title">Experience</h2>
-        <div v-for="job in experience" :key="job.company" class="job-block">
-          <h3 class="job-role">{{ job.role }} - {{ job.company }}</h3>
-          <p class="muted">{{ job.period }}</p>
+        <hr />
 
-          <h4 class="sub-title">工作職責 & 成果</h4>
-          <div class="achievements-grid">
-            <div v-for="ach in job.achievements" :key="ach.title" class="achievement-card">
-              <div class="icon"><i :class="ach.icon"></i></div>
-              <div class="text">
-                <h5 class="ach-title">{{ ach.title }}</h5>
-                <p class="ach-desc">{{ ach.description }}</p>
+        <!-- Summary -->
+        <section class="resume-section">
+          <h2 class="section-title">Summary</h2>
+          <p class="summary-text">{{ profile.summary }}</p>
+        </section>
+
+        <!-- Tech Stack -->
+        <section class="resume-section">
+          <h2 class="section-title">Tech Stack</h2>
+          <div class="tech-grid">
+            <div v-for="stack in techStack" :key="stack.category" class="tech-card">
+              <h4 class="tech-title"><i :class="stack.icon"></i> {{ stack.category }}</h4>
+              <ul>
+                <li v-for="skill in stack.skills" :key="skill">{{ skill }}</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- AI Application -->
+        <section class="resume-section">
+          <h2 class="section-title">AI Application</h2>
+          <div class="tech-grid">
+            <div v-for="ai in aiApplication" :key="ai.category" class="tech-card">
+              <h4 class="tech-title"><i :class="ai.icon"></i> {{ ai.category }}</h4>
+              <ul>
+                <li v-for="skill in ai.skills" :key="skill">{{ skill }}</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- Experience -->
+        <section class="resume-section">
+          <h2 class="section-title">Experience</h2>
+          <div v-for="job in experience" :key="job.company" class="job-block">
+            <h3 class="job-role">{{ job.role }} - {{ job.company }}</h3>
+            <p class="muted">{{ job.period }}</p>
+
+            <h4 class="sub-title">工作職責 & 成果</h4>
+            <div class="achievements-grid">
+              <div v-for="ach in job.achievements" :key="ach.title" class="achievement-card">
+                <div class="icon"><i :class="ach.icon"></i></div>
+                <div class="text">
+                  <h5 class="ach-title">{{ ach.title }}</h5>
+                  <p class="ach-desc" v-html="ach.description"></p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <!-- Education -->
-      <section class="resume-section">
-        <h2 class="section-title">Education</h2>
-        <div v-for="edu in education" :key="edu.school" class="edu-block">
-          <h3 class="edu-degree">{{ edu.degree }} - {{ edu.school }}</h3>
-          <p class="muted">{{ edu.period }}</p>
-          <p class="edu-desc" v-html="edu.description"></p>
-        </div>
-      </section>
+        <!-- Education -->
+        <section class="resume-section">
+          <h2 class="section-title">Education</h2>
+          <div v-for="edu in education" :key="edu.school" class="edu-block">
+            <h3 class="edu-degree">{{ edu.degree }} - {{ edu.school }}</h3>
+            <p class="muted">{{ edu.period }}</p>
+            <p class="edu-desc" v-html="edu.description"></p>
+          </div>
+        </section>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- Vue3 CDN -->
-<script src="https://unpkg.com/vue@3.3.4/dist/vue.global.prod.js"></script>
-<script>
-const { createApp, reactive } = Vue;
+  <!-- Vue3 CDN -->
+  <script src="https://unpkg.com/vue@3.3.4/dist/vue.global.prod.js"></script>
+  <script>
+    const { createApp, reactive } = Vue;
 
-createApp({
-  setup() {
-    const profile = reactive({
-      name: "王小明",
-      title: "全端工程師",
-      email: "xm_wang@example.com",
-      phone: "+886-912-345-678",
-      avatar: "https://via.placeholder.com/100",
-      summary:
-        "擁有前後端開發與系統優化實務經驗，專注於製造業資訊串接、自動化與介面改善。"
-    });
+    createApp({
+      setup() {
+        const profile = reactive({
+          name: "馬耀賢",
 
-    const techStack = reactive([
-      {
-        category: "Frontend",
-        icon: "fas fa-code",
-        skills: ["Vue.js", "HTML5", "CSS", "JavaScript", "Element-Plus"]
-      },
-      {
-        category: "Backend",
-        icon: "fas fa-server",
-        skills: ["Python", "Flask", "ASP.NET", "C#"]
-      },
-      {
-        category: "Database",
-        icon: "fas fa-database",
-        skills: ["Oracle", "MongoDB", "SQL Server", "Redis"]
-      }
-    ]);
+          email: "polo19961202@gmail.com",
+          phone: "+886-938-438-901",
+          avatar: "https://via.placeholder.com/100",
+          summary: `擁有製造業資訊系統整合、全端開發與流程自動化實戰經驗，善用 Vue3 + Flask 架構優化 UI/UX 與效能。
+                    精通 API、ETL 與資料庫優化，能提升系統穩定性與響應速度。
+                    具備模組化設計與集中化管理能力，並持續嘗試將 AI Agent 技術融入工作流程，為組織降低維運成本、加速功能部署。`
+        });
 
-    const education = reactive([
-      {
-        degree: "資訊工程學士",
-        school: "國立台南大學",
-        period: "2015 - 2019",
-        description:
-          "大學期間奠定扎實的資訊工程基礎，強化程式設計能力並參加程式競賽。<br/>曾擔任資訊服務志工社團副社長，至偏鄉小學教授程式設計，推廣資訊教育。<br/>畢業專題以 AI 影像分類為主題，應用機器學習技術實現分類模型。"
-      },
-      {
-        degree: "資訊工程碩士",
-        school: "國立台南大學",
-        period: "2019 - 2021",
-        description:
-          `碩士期間專注於人工智慧在醫療影像領域的應用，論文主題為醫療影像的 AI 影像處理，結合深度學習進行影像特徵擷取與轉換。<br/>
-          研究成果發表於國際期刊 <strong>Sensors（SCI 收錄）</strong>，2022 年卷 22(3)，文章編號 1044，<a href="https://doi.org/10.3390/s22031044" target="_blank">DOI: 10.3390/s22031044</a>。`
-      }
-    ]);
 
-    const experience = reactive([
-      {
-        role: "全端工程師",
-        company: "友達光電",
-        period: "2021 - 至今",
-        achievements: [
+        const aiApplication = reactive([
           {
-            title: "資訊系統整合串接",
-            description:
-              "整合多個分散且獨立的部門系統，重新設計資料流動與串接架構，確保資料在各系統間順暢傳遞並維持一致性，有效降低維護成本。",
-            icon: "fas fa-link"
+            category: "AI 技術專長",
+            icon: "fas fa-brain",
+            skills: [
+              "人工智慧影像處理（醫療影像、缺陷檢測）",
+              "GPT工作流設計與整合 — 持續研究並開發，善用現今 AI 工具探索系統整合與流程自動化"
+            ]
           },
           {
-            title: "辦公室作業流程自動化",
-            description:
-              "建立多渠道自動發報系統（Mail、Line、Telegram）及 Excel 與網頁操作自動化流程，減少人工步驟與錯誤率，大幅提升User辦公作業效率。",
-            icon: "fas fa-robot"
-          },
-          {
-            title: "UI/UX 介面優化",
-            description:
-              "重構舊有 ASPX/ASP 系統介面，導入資訊視覺化與直覺化操作設計，並優化響應速度與互動體驗，提升使用效率與滿意度。",
-            icon: "fas fa-laptop-code"
-          },
-          {
-            title: "系統效能提升",
-            description:
-              "優化 SQL 查詢與資料庫結構設計，並調整 API 架構支援高併發，系統回應時間縮短，穩定性顯著提升。",
-            icon: "fas fa-tachometer-alt"
-          },
-          {
-            title: "導入模組化設計",
-            description:
-              "將系統功能拆分為獨立模組，提升擴充性與可重用性，降低維護成本並加快新功能部署速度。",
-            icon: "fas fa-cubes"
-          },
-          {
-            title: "系統性管理",
-            description:
-              "建立標準化 ETL 流程管理機制，確保資料轉換穩定且可追溯；同時導入 API 統一管理系統，集中監控提升維運效率。",
-            icon: "fas fa-project-diagram"
+            category: "實務應用",
+            icon: "fas fa-robot",
+            skills: [
+              "結合 LLM 優化 ETL 流程與資料清理 — 當前應用於開發階段，評估導入生產系統的可行性",
+              "即時分析生產數據並預測異常狀況 — 研究中，目標提升系統智慧化水平"
+            ]
           }
-        ]
-      }
-    ]);
+        ]);
+        const techStack = reactive([
+          {
+            category: "Frontend",
+            icon: "fas fa-code",
+            skills: ["Vue.js", "HTML5", "CSS", "JavaScript", "Element-Plus"]
+          },
+          {
+            category: "Backend",
+            icon: "fas fa-server",
+            skills: ["Python", "Flask", "ASP.NET", "C#"]
+          },
+          {
+            category: "Database",
+            icon: "fas fa-database",
+            skills: ["Oracle", "MongoDB", "SQL Server", "Redis"]
+          }
+        ]);
 
-    return { profile, techStack, education, experience };
-  }
-}).mount("#app");
-</script>
+        const education = reactive([
+          {
+            degree: "資訊工程學士",
+            school: "國立台南大學",
+            period: "2015 - 2019",
+            description:
+              "大學期間奠定扎實的資訊工程基礎，強化程式設計能力並參加程式競賽。<br/>曾擔任資訊服務志工社團副社長，至偏鄉小學教授程式設計，推廣資訊教育。<br/>畢業專題以 AI 影像分類為主題，應用機器學習技術實現分類模型。"
+          },
+          {
+            degree: "資訊工程碩士",
+            school: "國立台南大學",
+            period: "2019 - 2021",
+            description:
+              `碩士期間專注於人工智慧在醫療影像領域的應用，論文主題為醫療影像的 AI 影像處理，結合深度學習進行影像特徵擷取與轉換。<br/>
+          研究成果發表於國際期刊 <strong>Sensors（SCI 收錄）</strong>，2022 年卷 22(3)，文章編號 1044，<a href="https://doi.org/10.3390/s22031044" target="_blank">DOI: 10.3390/s22031044</a>。`
+          }
+        ]);
+
+        const experience = reactive([
+          {
+            role: "全端工程師",
+            company: "友達光電",
+            period: "2021 - 至今",
+            achievements: [
+              {
+                title: "資訊系統整合串接",
+                description: `原本各部門（生產、工程、整合）資料分散，分析人員必須各方抓取數據、下載多份報表再人工彙整，分析一輪平均耗時 1-2 小時。<br/>
+                設計跨系統資料整合架構，利用 API + ETL 方式將關鍵生產、庫存、品管數據自動匯入統一資料平台，並建立即時儀表板。<br/>
+                整合後使用者可在同一平台完成數據查詢與分析，報表產出時間由降至 5~10分鐘，每月減少約 150 工時，同時避免人工作業造成的分析誤差。`,
+                icon: "fas fa-link"
+              },
+              {
+                title: "辦公室作業流程自動化",
+                description: `原本報告需人工匯出、轉檔、寄送，平均每日花費約 3 小時，且人工操作錯誤率約 5%。<br/>
+                我建立多渠道自動發報系統（Mail、Line、Telegram），並開發 Excel 與網頁操作自動化流程，減少重複性操作與人工干預。<br/>
+                自動化後，工作處理時間由 3 小時降至 30 分鐘，錯誤率降至 0.5%，估算每月節省約 240 工時，顯著提升辦公作業效率。`,
+                icon: "fas fa-robot"
+              },
+              {
+
+                title: "UI/UX 介面優化",
+                description: `舊有系統使用 ASPX/ASP 架構，前端與後端緊耦合，頁面載入速度慢且操作不直覺。<br/>
+                我採用 Vue3 + Flask 進行前後端分離重構，導入 CSR（Client Side Rendering）設計策略，並加上圖表視覺化模組（ECharts）即時呈現數據，提供直覺操作介面與動態儀表板。<br/>
+                重構後系統響應時間由 1.8 秒降至 0.5 秒，大幅提升使用效率與整體體驗。`,
+                icon: "fas fa-laptop-code"
+              },
+              {
+                title: "系統效能提升",
+                description: `原有系統 SQL Query 多採用逐筆查詢，未有效利用 JOIN 功能，且缺乏資料庫 Index，導致查詢緩慢；資料表設計缺乏規劃，結構冗餘，影響整體效能與維護性。<br/>
+                分析資料流，優化 SQL Query 結構，善用 JOIN、聚合與子查詢，並設立適當Index。
+           `,
+                icon: "fas fa-tachometer-alt"
+              },
+              {
+                title: "導入模組化設計",
+                description: `原本不同功能系統彼此間程式碼耦合度高，例如發報功能與核心業務程式交織，RPA 流程與報表生成程式緊密綁定，導致修改或擴充任一功能都需要全面測試，開發與維護成本高。<br/>
+                我重新規劃系統架構，將發報系統、RPA 自動化、資料處理與報表模組等功能獨立為多個服務；前端採組件化架構，後端依功能區分 API 與資料處理模組，明確界定介面與資料交換格式，降低模組間耦合度並提升重用性。<br/>
+                `,
+                icon: "fas fa-cubes"
+              },
+              {
+                title: "系統性管理",
+                description: `原本 ETL 程式分散於多台伺服器並使用 Windows 工作排程管理，缺乏 LOG 追蹤機制，當流程失敗或數據異常時，需要逐台檢查排程與程式紀錄，成本高且管理不便。<br/>
+                我以 Python 開發跨平台 Scheduler，內建完整 LOG 紀錄與錯誤通知功能，並設計直觀的網頁化 UI 管理介面，可集中管理 ETL 任務與 API 執行狀態，即時查看排程進度與紀錄，減少人工定位錯誤的時間。<br/>
+                導入後故障排查時間由平均 40 分鐘降至 5 分鐘，排程任務集中化管理率 100%，系統透明度與可靠性顯著提升。`,
+                icon: "fas fa-project-diagram"
+              }
+            ]
+          }
+        ]);
+
+        return { profile, techStack, aiApplication, education, experience };
+      }
+    }).mount("#app");
+  </script>
 </body>
+
 </html>
