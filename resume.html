@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>yaoxian resume v2</title>
+  <title>resumev2</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
   <style>
     body {
@@ -16,7 +16,6 @@
     .resume-container {
       display: flex;
       justify-content: center;
-      /* 水平置中 */
       padding: 40px 0;
     }
 
@@ -154,6 +153,131 @@
       color: #555;
       margin-bottom: 4px;
     }
+
+    .lightbox {
+      position: fixed;
+      z-index: 9999;
+      /* 整個 Lightbox 最外層 */
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .lightbox-background {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 1;
+      /* 背景最底層 */
+    }
+
+    .lightbox-image {
+      max-width: 90%;
+      max-height: 90%;
+      z-index: 2;
+      /* 圖片要高於背景層 */
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+    }
+
+    .nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 2rem;
+      color: white;
+      background: rgba(0, 0, 0, 0.5);
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+      z-index: 3;
+      /* 箭頭最高，避免被背景擋住 */
+    }
+
+    .nav-btn.prev {
+      left: 20px;
+    }
+
+    .nav-btn.next {
+      right: 20px;
+    }
+
+    .lightbox .prev {
+      left: 20px;
+    }
+
+    .lightbox .next {
+      right: 20px;
+    }
+
+    /* 專案圖片排版 */
+    .project-images {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .project-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 6px;
+      cursor: zoom-in;
+      transition: transform 0.2s ease;
+    }
+
+    .project-img:hover {
+      transform: scale(1);
+    }
+
+    .project-card {
+      display: flex;
+      gap: 15px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 15px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .project-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .project-image-container {
+      flex: 0 0 200px;
+      /* 固定圖片寬度 */
+    }
+
+    .project-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 6px;
+      cursor: zoom-in;
+    }
+
+    .project-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      /* justify-content: space-between; */
+    }
+
+    .project-title {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #007bff;
+      margin-bottom: 4px;
+    }
+
+    .project-desc {
+      font-size: 0.9rem;
+      color: #555;
+      line-height: 1.5;
+    }
   </style>
 </head>
 
@@ -163,7 +287,6 @@
       <div class="resume">
         <!-- Header -->
         <header class="resume-header">
-          <!-- <img :src="profile.avatar" alt="avatar" class="avatar" /> -->
           <div class="header-info">
             <h1 class="name">{{ profile.name }}</h1>
             <p class="title">{{ profile.title }}</p>
@@ -192,10 +315,6 @@
             </div>
           </div>
         </section>
-
-
-      
-
 
         <!-- Experience -->
         <section class="resume-section">
@@ -226,6 +345,37 @@
             <p class="edu-desc" v-html="edu.description"></p>
           </div>
         </section>
+
+        <section class="resume-section">
+          <h2 class="section-title">Recent Projects</h2>
+          <div class="projects-grid">
+            <div v-for="(proj, projIndex) in projects" :key="proj.title" class="project-card">
+              <!-- 左邊圖片 -->
+              <div class="project-image-container">
+                <img :src="proj.images[0]" :alt="proj.title" class="project-img" @click="openLightbox(projIndex, 0)" />
+              </div>
+
+              <!-- 右邊資訊 -->
+              <div class="project-info">
+                <div class="project-title">{{ proj.title }}</div>
+                <div class="project-desc" v-html="proj.description"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div v-if="lightboxProjectIndex !== null" class="lightbox">
+          <!-- 背景層：點擊關閉 -->
+          <div class="lightbox-background" @click="closeLightbox"></div>
+
+          <!-- 圖片 -->
+          <img class="lightbox-image" :src="projects[lightboxProjectIndex].images[lightboxImageIndex]"
+            alt="Enlarged Image" />
+
+          <!-- 左右箭頭 -->
+          <button class="nav-btn prev" @click.stop="prevImage">&#10094;</button>
+          <button class="nav-btn next" @click.stop="nextImage">&#10095;</button>
+        </div>
       </div>
     </div>
   </div>
@@ -233,13 +383,13 @@
   <!-- Vue3 CDN -->
   <script src="https://unpkg.com/vue@3.3.4/dist/vue.global.prod.js"></script>
   <script>
-    const { createApp, reactive } = Vue;
+    const { createApp, reactive, ref } = Vue;
 
     createApp({
       setup() {
         const profile = reactive({
           name: "馬耀賢",
-
+          title: "軟體工程師、前/後端工程師",
           email: "polo19961202@gmail.com",
           phone: "+886-938-438-901",
           avatar: "https://via.placeholder.com/100",
@@ -248,41 +398,10 @@
                     具備模組化設計與集中化管理能力，並持續嘗試將 AI Agent 技術融入工作流程，為組織降低維運成本、加速功能部署。`
         });
 
-
-        const aiApplication = reactive([
-          {
-            category: "AI 技術專長",
-            icon: "fas fa-brain",
-            skills: [
-              "人工智慧影像處理（醫療影像、缺陷檢測）",
-              "GPT工作流設計與整合 — 持續研究並開發，善用現今 AI 工具探索系統整合與流程自動化"
-            ]
-          },
-          {
-            category: "實務應用",
-            icon: "fas fa-robot",
-            skills: [
-              "結合 LLM 優化 ETL 流程與資料清理 — 當前應用於開發階段，評估導入生產系統的可行性",
-              "即時分析生產數據並預測異常狀況 — 研究中，目標提升系統智慧化水平"
-            ]
-          }
-        ]);
         const techStack = reactive([
-          {
-            category: "Frontend",
-            icon: "fas fa-code",
-            skills: ["Vue.js", "HTML5", "CSS", "JavaScript", "Element-Plus"]
-          },
-          {
-            category: "Backend",
-            icon: "fas fa-server",
-            skills: ["Python", "Flask", "ASP.NET", "C#"]
-          },
-          {
-            category: "Database",
-            icon: "fas fa-database",
-            skills: ["Oracle", "MongoDB", "SQL Server", "Redis"]
-          }
+          { category: "Frontend", icon: "fas fa-code", skills: ["Vue.js", "HTML5", "CSS", "JavaScript", "Element-Plus"] },
+          { category: "Backend", icon: "fas fa-server", skills: ["Python", "Flask", "ASP.NET", "C#"] },
+          { category: "Database", icon: "fas fa-database", skills: ["Oracle", "MongoDB", "SQL Server", "Redis"] }
         ]);
 
         const education = reactive([
@@ -307,7 +426,7 @@
           {
             role: "全端工程師",
             company: "友達光電",
-            period: "2021 - 至今",
+            period: "2021 - 至今 (4 years +)",
             achievements: [
               {
                 title: "資訊系統整合串接",
@@ -356,7 +475,150 @@
           }
         ]);
 
-        return { profile, techStack, aiApplication, education, experience };
+        const projects = reactive([
+          {
+            title: "出貨追蹤系統",
+            description: `1.追蹤管理出貨生產目標，透過適當ETL拆解資料源進行資料整併，加速資料載入速度。
+            <br>2.以簡單介面搭配色彩標示，並透過tooltip顯示階層式資料，提升使用者資訊掌握速度(圖1)。
+            <br>3.提供友善資料維護功能，支援手動調整 & 自動Excel資料上拋(圖2)。
+            <br>4.現有資料報表連結，減少重複開發與保持資料一致性(圖3)。`,
+            images: [
+
+              "IMG_5849.jpeg"
+              ,"IMG_5850.jpeg"
+              ,"IMG_5851.jpeg"
+            ]
+          },
+          {
+            title: "視覺化生產資訊統整看板",
+            description: `1.整合多方生產資訊，單一介面集中顯示管理。
+            <br>2.使用色彩警示與色彩對比，提升資訊掌握效率，快速聚焦。
+
+            `,
+            images: [
+
+              "IMG_5842.jpeg"
+              ,"IMG_5853.jpeg"
+              ,"IMG_5854.jpeg"
+              ,"IMG_5855.jpeg"
+               
+        ]
+          },
+          {
+            title: "投產追蹤與資料流程自動化",
+            description: `1.使用者Excel手動比對資料 -> 調整為系統一鍵自動化處理。
+            <br>2.後台友善，提供一鍵資料整併操作、EventStream模式實時回報RPA處理狀況(圖1)。
+            <br>3.通知自動化 -> 定時MAIL發報。
+            <br>4.視覺化界面呈現。
+            `,
+            images: [
+
+              "IMG_5856.jpeg"
+             ,"IMG_5857.jpeg"
+              
+      ]
+          },
+            {
+            title: "成本分析趨勢追蹤報表",
+            description: `1.圖表化視覺呈現。
+            <br>2.圖表模板模組化，降低程式重複性，加強樣式管理一致化。
+            
+            
+            `,
+            images: [
+
+              "IMG_5858.jpeg"
+             ,"IMG_5859.jpeg"
+              
+      ]
+          },
+            {
+            title: "RPA模組化&流程優化",
+            description: `1.覆用性自動化流程模組化，建構高度彈性I/O介面，(Ex.資料來源)。
+            <br>2.改善舊有RPA瀏覽器UI模擬操作流程 -> 解析、導向純後端操作(Ex.爬蟲、表單送出等)。
+            <br>3.EventStream實時反饋，加入Heartbeat提示，掌握長I/O的程式執行狀況，防止系統出錯空等。
+            `,
+            images: [
+
+              "IMG_5860.jpeg"
+             ,"IMG_5861.jpeg"
+              
+      ]
+          },
+             {
+            title: "系統集成管理",
+            description: `1.後端Service透過Python集成管理監控。
+            <br>2.Python ETL統一管理，系統性Log追蹤。
+            
+            `,
+            images: [
+
+              "IMG_5862.jpeg"
+             ,"IMG_5863.jpeg"
+              
+      ]
+          },
+             {
+            title: "AI GPT輔助資料分析",
+            description: `1.嘗試導入AI Service進行資訊統整、分析。
+            <br>2.通用型GPT Service搭配Prompt控制結果。
+            <br>3.插件化模組設計，整合至現有報表系統(圖2,3)。
+            
+            `,
+            images: [
+
+              "IMG_5864.jpeg"
+               ,"IMG_5865.jpeg"
+              ,"IMG_5866.jpeg"
+              ,"IMG_5867.jpeg"
+      ]
+          },
+        ]);
+
+        const lightboxProjectIndex = ref(null);  // 哪個專案
+        const lightboxImageIndex = ref(null);    // 專案內的圖片索引
+
+        function openLightbox(projectIndex, imageIndex) {
+          lightboxProjectIndex.value = projectIndex;
+          lightboxImageIndex.value = imageIndex;
+        }
+
+        function closeLightbox() {
+          lightboxProjectIndex.value = null;
+          lightboxImageIndex.value = null;
+        }
+
+        function prevImage() {
+          if (lightboxProjectIndex.value !== null) {
+            const images = projects[lightboxProjectIndex.value].images;
+            lightboxImageIndex.value =
+              (lightboxImageIndex.value - 1 + images.length) % images.length;
+          }
+        }
+
+        function nextImage() {
+          if (lightboxProjectIndex.value !== null) {
+            const images = projects[lightboxProjectIndex.value].images;
+            lightboxImageIndex.value =
+              (lightboxImageIndex.value + 1) % images.length;
+          }
+        }
+
+
+        return {
+          profile,
+          techStack,
+          education,
+          experience,
+          projects,
+          lightboxProjectIndex,
+          lightboxImageIndex,
+          openLightbox,
+          closeLightbox,
+          prevImage,
+          nextImage
+        };
+
       }
     }).mount("#app");
   </script>
